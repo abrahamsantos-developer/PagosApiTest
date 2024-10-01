@@ -6,11 +6,17 @@ services:
     environment:
       POSTGRES_USER: myUser
       POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: myPagosDB
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: myUser
+    # ports:
+    #   - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myUser"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s  
 
   api:
     build: .
@@ -20,10 +26,11 @@ services:
       DB_HOST: db
       DB_USER: myUser
       DB_PASSWORD: 123456
-      DB_NAME: myPagosDB
+      DB_NAME: myUser
       DB_PORT: 5432
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   db_data:

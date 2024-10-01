@@ -1,6 +1,6 @@
 module myPagosApp
 
-go 1.22.2
+go 1.22
 
 require (
 	github.com/bytedance/sonic v1.12.3 // indirect

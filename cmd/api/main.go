@@ -1,28 +1,32 @@
 package main
 
 import (
-    "log"
-    "myPagosApp/pkg"     // Aquí está la conexión a PostgreSQL
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
+	"log"
+	"myPagosApp/pkg" // Aquí está la conexión a PostgreSQL
 )
 
 func main() {
-    // Conectarse a la base de datos
-    db := pkg.ConnectDB()
-    if db == nil {
-        log.Fatal("No se pudo conectar a la base de datos")
-    }
 
-    // Inicializar el router de Gin
-    r := gin.Default()
+	// Configurar modo release en producción
+	gin.SetMode(gin.ReleaseMode)
+    
+	// Conectarse a la base de datos
+	db := pkg.ConnectDB()
+	if db == nil {
+		log.Fatal("No se pudo conectar a la base de datos")
+	}
 
-    // Ruta simple para verificar que el servidor funciona
-    r.GET("/", func(c *gin.Context) {
-        c.JSON(200, gin.H{
-            "message": "¡Servidor corriendo correctamente!",
-        })
-    })
+	// Inicializar el router de Gin
+	r := gin.Default()
 
-    // Iniciar el servidor en el puerto 3000
-    r.Run(":3000")
+	// Ruta simple para verificar que el servidor funciona
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "¡Servidor corriendo correctamente!",
+		})
+	})
+
+	// Iniciar el servidor en el puerto 3000
+	r.Run(":3000")
 }
