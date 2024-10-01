@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 	"myPagosApp/pkg" // Aquí está la conexión a PostgreSQL
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 
 	// Configurar modo release en producción
 	gin.SetMode(gin.ReleaseMode)
-    
+
 	// Conectarse a la base de datos
 	db := pkg.ConnectDB()
 	if db == nil {
@@ -23,7 +24,7 @@ func main() {
 	// Ruta simple para verificar que el servidor funciona
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "¡Servidor corriendo correctamente!",
+			"message": "¡Servidor corriendo correctamente, OK OK OK!",
 		})
 	})
 

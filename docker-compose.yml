@@ -28,6 +28,8 @@ services:
       DB_PASSWORD: 123456
       DB_NAME: myUser
       DB_PORT: 5432
+    volumes:
+      - .:/app  # Aquí montamos el directorio actual al contenedor  
     depends_on:
       db:
         condition: service_healthy
