@@ -32,7 +32,7 @@ type ErrorResponse struct {
 // @Tags Comercios
 // @Accept  json
 // @Produce  json
-// @Param merchant body models.Merchant true "Comercio a crear"
+// @Param merchant body models.Merchant true "Comercio a crear" example({"commission": 15, "name": "comercio123"})
 // @Success 200 {object} models.Merchant
 // @Failure 400 {object} ErrorResponse
 // @Router /merchants [post]
@@ -71,7 +71,7 @@ func (h *MerchantHandler) GetAllMerchantsHandler(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "ID del Comercio"
-// @Param merchant body models.Merchant true "Datos actualizados del comercio"
+// @Param merchant body models.Merchant true "Datos actualizados del comercio" example({"commission": 99, "name": "Comercio Actualizado"})
 // @Success 200 {object} models.Merchant
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
