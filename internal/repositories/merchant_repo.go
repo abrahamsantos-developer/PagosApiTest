@@ -23,7 +23,8 @@ func (r *MerchantRepository) CreateMerchant(merchant *models.Merchant) error {
 // obtiene todos los merchants DB
 func (r *MerchantRepository) GetAllMerchants() ([]models.Merchant, error) {
 	var merchants []models.Merchant
-	err := r.DB.Find(&merchants).Error
+	// err := r.DB.Find(&merchants).Error
+	err := r.DB.Preload("Transactions").Find(&merchants).Error
 	return merchants, err
 }
 
@@ -35,8 +36,11 @@ func (r *MerchantRepository) UpdateMerchant(id uuid.UUID, updatedMerchant *model
 // obtiene merchant por ID
 func (r *MerchantRepository) GetMerchantByID(id uuid.UUID) (*models.Merchant, error) {
 	var merchant models.Merchant
-	if err := r.DB.First(&merchant, "id = ?", id).Error; err != nil {
-		return nil, err
-	}
+	// if err := r.DB.First(&merchant, "id = ?", id).Error; err != nil {
+	// 	return nil, err
+	// }
+	if err := r.DB.Preload("Transactions").First(&merchant, "id = ?", id).Error; err != nil {
+        return nil, err
+    }
 	return &merchant, nil
 }

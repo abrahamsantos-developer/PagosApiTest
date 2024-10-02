@@ -26,7 +26,8 @@ type SwaggerTransactionRequest struct {
 
 // struct personalizado(error)
 type TransactionErrorResponse struct {
-	Error string `json:"error"`
+	Error   string `json:"error"`
+	Message string `json:"message"`
 }
 
 // @Summary Crear una transacción
@@ -41,11 +42,36 @@ type TransactionErrorResponse struct {
 func (h *TransactionHandler) CreateTransactionHandler(c *gin.Context) {
 	var transaction models.Transaction
 	if err := c.ShouldBindJSON(&transaction); err != nil {
-		c.JSON(http.StatusBadRequest, TransactionErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, TransactionErrorResponse{
+			Error:   "Error de validacion",
+			Message: "El cuerpo de la solicitud no es valido: " + err.Error(),
+		})
 		return
 	}
+
+	// valida que MerchantID sea UUID
+	if _, err := uuid.Parse(transaction.MerchantID.String()); err != nil {
+		c.JSON(http.StatusBadRequest, TransactionErrorResponse{
+			Error:   "UUID con formato invalido",
+			Message: "El MerchantID proporcionado no es un UUID valido",
+		})
+		return
+	}
+
+	// valida que ammount no sea negativo o cero
+	if transaction.Amount <= 0 {
+		c.JSON(http.StatusBadRequest, TransactionErrorResponse{
+			Error:   "Monto invalido",
+			Message: "El monto de la transaccion debe ser mayor a 0",
+		})
+		return
+	}
+
 	if err := h.service.CreateTransaction(&transaction); err != nil {
-		c.JSON(http.StatusBadRequest, TransactionErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, TransactionErrorResponse{
+			Error:   "Error al crear la transacción",
+			Message: err.Error(),
+		})
 		return
 	}
 	c.JSON(http.StatusOK, transaction)
@@ -79,12 +105,19 @@ func (h *TransactionHandler) GetTransactionsByMerchantIDHandler(c *gin.Context) 
 	idParam := c.Param("merchant_id")
 	merchantID, err := uuid.Parse(idParam)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, TransactionErrorResponse{Error: "ID de comercio inválido"})
+		c.JSON(http.StatusBadRequest, TransactionErrorResponse{
+			Error:   "UUID con formato invalido",
+			Message: "El MerchantID proporcionado no es un UUID valido",
+		})
 		return
 	}
+
 	transactions, err := h.service.GetTransactionsByMerchantID(merchantID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, TransactionErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, TransactionErrorResponse{
+			Error:   "Error al obtener las transacciones",
+			Message: "Hubo un problema al intentar obtener las transacciones del comercio: " + err.Error(),
+		})
 		return
 	}
 	c.JSON(http.StatusOK, transactions)
@@ -102,12 +135,19 @@ func (h *TransactionHandler) GetTransactionByIDHandler(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, TransactionErrorResponse{Error: "ID inválido"})
+		c.JSON(http.StatusBadRequest, TransactionErrorResponse{
+			Error:   "UUID con formato invalido",
+			Message: "La ID proporcionada no es un UUID valido",
+		})
 		return
 	}
+
 	transaction, err := h.service.GetTransactionByID(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, TransactionErrorResponse{Error: "Transacción no encontrada"})
+		c.JSON(http.StatusNotFound, TransactionErrorResponse{
+			Error:   "Transacción no encontrada",
+			Message: "No se encontró una transacción con el ID proporcionado",
+		})
 		return
 	}
 	c.JSON(http.StatusOK, transaction)
