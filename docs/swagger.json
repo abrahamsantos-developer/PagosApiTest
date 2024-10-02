@@ -77,6 +77,45 @@
             }
         },
         "/merchants/{id}": {
+            "get": {
+                "description": "Obtener los detalles de un comercio específico mediante su ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comercios"
+                ],
+                "summary": "Obtener un comercio por ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Comercio",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Merchant"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "Actualizar los detalles de un comercio existente.",
                 "consumes": [

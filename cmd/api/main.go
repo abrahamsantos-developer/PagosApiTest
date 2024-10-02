@@ -21,7 +21,7 @@ import (
 
 func main() {
 
-	// monfigurar modo release 
+	// monfigurar modo release
 	gin.SetMode(gin.ReleaseMode)
 
 	// Conecta a la base de datos
@@ -50,12 +50,12 @@ func main() {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-
-	// Definir rutas para comercios
+	// routes
 	r.POST("/merchants", merchantHandler.CreateMerchantHandler)
 	r.GET("/merchants", merchantHandler.GetAllMerchantsHandler)
+	r.GET("/merchants/:id", merchantHandler.GetMerchantByIDHandler)
 	r.PUT("/merchants/:id", merchantHandler.UpdateMerchantHandler)
 
-	// Iniciar el servidor en el puerto 3000
+	// server port: 3000
 	r.Run(":3000")
 }

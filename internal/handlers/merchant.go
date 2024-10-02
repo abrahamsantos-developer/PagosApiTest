@@ -37,7 +37,7 @@ type ErrorResponse struct {
 // @Tags Comercios
 // @Accept  json
 // @Produce  json
-// @Param merchant body handlers.SwaggerMerchantRequest true "Comercio a crear" 
+// @Param merchant body handlers.SwaggerMerchantRequest true "Comercio a crear"
 // @Success 200 {object} models.Merchant
 // @Failure 400 {object} ErrorResponse
 // @Router /merchants [post]
@@ -68,6 +68,30 @@ func (h *MerchantHandler) GetAllMerchantsHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, merchants)
+}
+
+// @Summary Obtener un comercio por ID
+// @Description Obtener los detalles de un comercio específico mediante su ID.
+// @Tags Comercios
+// @Produce json
+// @Param id path string true "ID del Comercio"
+// @Success 200 {object} models.Merchant
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /merchants/{id} [get]
+func (h *MerchantHandler) GetMerchantByIDHandler(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := uuid.Parse(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "ID inválido"})
+		return
+	}
+	merchant, err := h.service.GetMerchantByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, ErrorResponse{Error: "Comercio no encontrado"})
+		return
+	}
+	c.JSON(http.StatusOK, merchant)
 }
 
 // @Summary Actualizar un comercio

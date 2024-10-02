@@ -80,6 +80,32 @@ paths:
       tags:
       - Comercios
   /merchants/{id}:
+    get:
+      description: Obtener los detalles de un comercio específico mediante su ID.
+      parameters:
+      - description: ID del Comercio
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Merchant'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Obtener un comercio por ID
+      tags:
+      - Comercios
     put:
       consumes:
       - application/json

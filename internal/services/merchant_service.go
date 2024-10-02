@@ -30,6 +30,11 @@ func (s *MerchantService) GetAllMerchants() ([]models.Merchant, error) {
     return s.repository.GetAllMerchants()
 }
 
+// GetMerchantByID busca un comercio por su UUID
+func (s *MerchantService) GetMerchantByID(id uuid.UUID) (*models.Merchant, error) {
+    return s.repository.GetMerchantByID(id)
+}
+
 // UpdateMerchant actualiza un comercio existente por su UUID
 func (s *MerchantService) UpdateMerchant(id uuid.UUID, merchant *models.Merchant) error {
     // Buscar si el comercio existe antes de actualizar
