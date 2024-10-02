@@ -62,7 +62,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Merchant"
+                            "$ref": "#/definitions/handlers.SwaggerMerchantRequest"
                         }
                     }
                 ],
@@ -109,7 +109,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Merchant"
+                            "$ref": "#/definitions/handlers.SwaggerMerchantRequest"
                         }
                     }
                 ],
@@ -142,6 +142,19 @@ const docTemplate = `{
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "handlers.SwaggerMerchantRequest": {
+            "type": "object",
+            "properties": {
+                "commission": {
+                    "type": "integer",
+                    "example": 15
+                },
+                "name": {
+                    "type": "string",
+                    "example": "comercio123"
                 }
             }
         },

@@ -18,6 +18,11 @@ func NewMerchantHandler(service *services.MerchantService) *MerchantHandler {
 	return &MerchantHandler{service: service}
 }
 
+type SwaggerMerchantRequest struct {
+	Name       string `json:"name" example:"comercio123"`
+	Commission uint   `json:"commission" example:"15"`
+}
+
 // Estructuras de respuesta
 type ErrorResponse struct {
 	Error string `json:"error"`
@@ -32,7 +37,7 @@ type ErrorResponse struct {
 // @Tags Comercios
 // @Accept  json
 // @Produce  json
-// @Param merchant body models.Merchant true "Comercio a crear" example({"commission": 15, "name": "comercio123"})
+// @Param merchant body handlers.SwaggerMerchantRequest true "Comercio a crear" 
 // @Success 200 {object} models.Merchant
 // @Failure 400 {object} ErrorResponse
 // @Router /merchants [post]
@@ -71,7 +76,7 @@ func (h *MerchantHandler) GetAllMerchantsHandler(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "ID del Comercio"
-// @Param merchant body models.Merchant true "Datos actualizados del comercio" example({"commission": 99, "name": "Comercio Actualizado"})
+// @Param merchant body handlers.SwaggerMerchantRequest true "Datos actualizados del comercio"
 // @Success 200 {object} models.Merchant
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse

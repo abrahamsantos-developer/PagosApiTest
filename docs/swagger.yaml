@@ -5,6 +5,15 @@ definitions:
       error:
         type: string
     type: object
+  handlers.SwaggerMerchantRequest:
+    properties:
+      commission:
+        example: 15
+        type: integer
+      name:
+        example: comercio123
+        type: string
+    type: object
   models.Merchant:
     properties:
       commission:
@@ -55,7 +64,7 @@ paths:
         name: merchant
         required: true
         schema:
-          $ref: '#/definitions/models.Merchant'
+          $ref: '#/definitions/handlers.SwaggerMerchantRequest'
       produces:
       - application/json
       responses:
@@ -86,7 +95,7 @@ paths:
         name: merchant
         required: true
         schema:
-          $ref: '#/definitions/models.Merchant'
+          $ref: '#/definitions/handlers.SwaggerMerchantRequest'
       produces:
       - application/json
       responses:
