@@ -174,6 +174,79 @@ const docTemplate = `{
                 }
             }
         },
+        "/profits": {
+            "get": {
+                "description": "Obtiene las ganancias de todas las transacciones registradas.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ganancias"
+                ],
+                "summary": "Obtener las ganancias totales",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ProfitErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/profits/merchant/{merchant_id}": {
+            "get": {
+                "description": "Obtiene las ganancias de un comercio específico mediante su ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ganancias"
+                ],
+                "summary": "Obtener las ganancias por comercio",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Comercio",
+                        "name": "merchant_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ProfitErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ProfitErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/transactions": {
             "get": {
                 "description": "Obtener una lista de todas las transacciones realizadas.",
@@ -317,6 +390,14 @@ const docTemplate = `{
     },
     "definitions": {
         "handlers.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.ProfitErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {

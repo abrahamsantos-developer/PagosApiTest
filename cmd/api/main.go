@@ -43,6 +43,10 @@ func main() {
 	transactionService := services.NewTransactionService(transactionRepo, merchantRepo)
 	transactionHandler := handlers.NewTransactionHandler(transactionService)
 
+	// Inicializa service y handler de profits
+	profitService := services.NewProfitService(transactionRepo)
+	profitHandler := handlers.NewProfitHandler(profitService)
+
 	// Inicializar el router de gin
 	r := gin.Default()
 
@@ -66,6 +70,10 @@ func main() {
 	r.GET("/transactions", transactionHandler.GetAllTransactionsHandler)
 	r.GET("/transactions/:id", transactionHandler.GetTransactionByIDHandler)
 	r.GET("/transactions/merchant/:merchant_id", transactionHandler.GetTransactionsByMerchantIDHandler)
+
+	// routes de ganancias
+	r.GET("/profits", profitHandler.GetTotalProfitsHandler)
+	r.GET("/profits/merchant/:merchant_id", profitHandler.GetProfitsByMerchantIDHandler)
 
 	// server port: 3000
 	r.Run(":3000")

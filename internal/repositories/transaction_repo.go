@@ -43,3 +43,29 @@ func (r *TransactionRepository) GetTransactionByID(id uuid.UUID) (*models.Transa
     return &transaction, nil
 }
 
+// Suma todas las comisiones de todas las transacciones
+func (r *TransactionRepository) GetTotalProfits() (float64, error) {
+    var totalProfits float64
+    // Suma todos los fees de las transacciones
+    err := r.DB.Model(&models.Transaction{}).Select("SUM(fee)").Scan(&totalProfits).Error
+    if err != nil {
+        return 0, err
+    }
+    return totalProfits, nil
+}
+
+// suma todas las fees de las transacciones de un comercio especifico
+func (r *TransactionRepository) SumCommissionsByMerchantID(merchantID uuid.UUID) (float64, error) {
+    var totalCommission float64
+    err := r.DB.Model(&models.Transaction{}).
+        Where("merchant_id = ?", merchantID).
+        Select("SUM(commission)").
+        Scan(&totalCommission).Error
+    if err != nil {
+        return 0, err
+    }
+    return totalCommission, nil
+}
+
+
+
