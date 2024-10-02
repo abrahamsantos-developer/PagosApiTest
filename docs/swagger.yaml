@@ -14,16 +14,53 @@ definitions:
         example: comercio123
         type: string
     type: object
+  handlers.SwaggerTransactionRequest:
+    properties:
+      amount:
+        example: 100.5
+        type: number
+      merchant_id:
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        type: string
+    type: object
+  handlers.TransactionErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
   models.Merchant:
     properties:
       commission:
-        description: porcentaje comision
-        type: integer
+        type: number
       created_at:
         type: string
       id:
         type: string
       name:
+        type: string
+      transactions:
+        description: agregamos la relacion
+        items:
+          $ref: '#/definitions/models.Transaction'
+        type: array
+      updated_at:
+        type: string
+    type: object
+  models.Transaction:
+    properties:
+      amount:
+        type: number
+      commission:
+        description: porcentaje aplicado (tomado del comercio)
+        type: number
+      created_at:
+        type: string
+      fee:
+        description: comisión calculada
+        type: number
+      id:
+        type: string
+      merchant_id:
         type: string
       updated_at:
         type: string
@@ -140,4 +177,97 @@ paths:
       summary: Actualizar un comercio
       tags:
       - Comercios
+  /transactions:
+    get:
+      description: Obtener una lista de todas las transacciones realizadas.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Transaction'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.TransactionErrorResponse'
+      summary: Obtener todas las transacciones
+      tags:
+      - Transacciones
+    post:
+      consumes:
+      - application/json
+      description: Crear una nueva transacción para un comercio y calcular el fee
+        basado en la comisión.
+      parameters:
+      - description: Transacción a crear
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.SwaggerTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.TransactionErrorResponse'
+      summary: Crear una transacción
+      tags:
+      - Transacciones
+  /transactions/{id}:
+    get:
+      description: Obtener los detalles de una transacción específica por su ID.
+      parameters:
+      - description: ID de la Transacción
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.TransactionErrorResponse'
+      summary: Obtener una transacción por ID
+      tags:
+      - Transacciones
+  /transactions/merchant/{merchant_id}:
+    get:
+      description: Obtener todas las transacciones de un comercio específico.
+      parameters:
+      - description: ID del Comercio
+        in: path
+        name: merchant_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Transaction'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.TransactionErrorResponse'
+      summary: Obtener todas las transacciones de un comercio
+      tags:
+      - Transacciones
 swagger: "2.0"

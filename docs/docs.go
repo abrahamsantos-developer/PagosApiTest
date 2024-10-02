@@ -173,6 +173,146 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/transactions": {
+            "get": {
+                "description": "Obtener una lista de todas las transacciones realizadas.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transacciones"
+                ],
+                "summary": "Obtener todas las transacciones",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Transaction"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.TransactionErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Crear una nueva transacción para un comercio y calcular el fee basado en la comisión.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transacciones"
+                ],
+                "summary": "Crear una transacción",
+                "parameters": [
+                    {
+                        "description": "Transacción a crear",
+                        "name": "transaction",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.SwaggerTransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Transaction"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.TransactionErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/merchant/{merchant_id}": {
+            "get": {
+                "description": "Obtener todas las transacciones de un comercio específico.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transacciones"
+                ],
+                "summary": "Obtener todas las transacciones de un comercio",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Comercio",
+                        "name": "merchant_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Transaction"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.TransactionErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/{id}": {
+            "get": {
+                "description": "Obtener los detalles de una transacción específica por su ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transacciones"
+                ],
+                "summary": "Obtener una transacción por ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID de la Transacción",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Transaction"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.TransactionErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -197,12 +337,32 @@ const docTemplate = `{
                 }
             }
         },
+        "handlers.SwaggerTransactionRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number",
+                    "example": 100.5
+                },
+                "merchant_id": {
+                    "type": "string",
+                    "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+                }
+            }
+        },
+        "handlers.TransactionErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Merchant": {
             "type": "object",
             "properties": {
                 "commission": {
-                    "description": "porcentaje comision",
-                    "type": "integer"
+                    "type": "number"
                 },
                 "created_at": {
                     "type": "string"
@@ -211,6 +371,41 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "transactions": {
+                    "description": "agregamos la relacion",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Transaction"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Transaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "commission": {
+                    "description": "porcentaje aplicado (tomado del comercio)",
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "fee": {
+                    "description": "comisión calculada",
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "merchant_id": {
                     "type": "string"
                 },
                 "updated_at": {

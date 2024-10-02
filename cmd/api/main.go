@@ -31,14 +31,19 @@ func main() {
 	}
 
 	// migra modelo Merchant para crear la tabla si no existe
-	db.AutoMigrate(&models.Merchant{})
+	db.AutoMigrate(&models.Merchant{}, &models.Transaction{})
 
-	// Inicializar repositorio, servicio y handler para comercios
+	// Inicializa repo service y handler de merchants
 	merchantRepo := repositories.NewMerchantRepository(db)
 	merchantService := services.NewMerchantService(merchantRepo)
 	merchantHandler := handlers.NewMerchantHandler(merchantService)
 
-	// Inicializar el router de Gin
+	// Inicializa repo service y handler de transactions
+	transactionRepo := repositories.NewTransactionRepository(db)
+	transactionService := services.NewTransactionService(transactionRepo, merchantRepo)
+	transactionHandler := handlers.NewTransactionHandler(transactionService)
+
+	// Inicializar el router de gin
 	r := gin.Default()
 
 	// sirve para verificar que el servidor funciona
@@ -50,11 +55,17 @@ func main() {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// routes
+	// routes de merchants
 	r.POST("/merchants", merchantHandler.CreateMerchantHandler)
 	r.GET("/merchants", merchantHandler.GetAllMerchantsHandler)
 	r.GET("/merchants/:id", merchantHandler.GetMerchantByIDHandler)
 	r.PUT("/merchants/:id", merchantHandler.UpdateMerchantHandler)
+
+	//routes de transactions
+	r.POST("/transactions", transactionHandler.CreateTransactionHandler)
+	r.GET("/transactions", transactionHandler.GetAllTransactionsHandler)
+	r.GET("/transactions/:id", transactionHandler.GetTransactionByIDHandler)
+	r.GET("/transactions/merchant/:merchant_id", transactionHandler.GetTransactionsByMerchantIDHandler)
 
 	// server port: 3000
 	r.Run(":3000")
