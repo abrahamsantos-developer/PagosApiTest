@@ -19,5 +19,6 @@ type Merchant struct {
 // genera UUID antes de insertar nuevo registro
 func (m *Merchant) BeforeCreate(tx *gorm.DB) (err error) {
 	m.ID = uuid.New()
+	m.Transactions = []Transaction{}
 	return
 }
