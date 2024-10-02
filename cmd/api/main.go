@@ -21,16 +21,16 @@ import (
 
 func main() {
 
-	// Configurar modo release en producción
+	// monfigurar modo release 
 	gin.SetMode(gin.ReleaseMode)
 
-	// Conectarse a la base de datos
+	// Conecta a la base de datos
 	db := pkg.ConnectDB()
 	if db == nil {
 		log.Fatal("No se pudo conectar a la base de datos")
 	}
 
-	// Migrar el modelo Merchant para crear la tabla si no existe
+	// migra modelo Merchant para crear la tabla si no existe
 	db.AutoMigrate(&models.Merchant{})
 
 	// Inicializar repositorio, servicio y handler para comercios
@@ -41,7 +41,7 @@ func main() {
 	// Inicializar el router de Gin
 	r := gin.Default()
 
-	// Ruta simple para verificar que el servidor funciona
+	// sirve para verificar que el servidor funciona
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "¡Servidor corriendo correctamente, OK OK OK!",
