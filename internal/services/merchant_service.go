@@ -4,6 +4,7 @@ import (
 	"fmt"
     "myPagosApp/internal/models"
     "myPagosApp/internal/repositories"
+	"github.com/google/uuid"
 )
 
 // MerchantService define la lógica de negocio para los comercios
@@ -29,7 +30,17 @@ func (s *MerchantService) GetAllMerchants() ([]models.Merchant, error) {
     return s.repository.GetAllMerchants()
 }
 
-// UpdateMerchant actualiza un comercio existente
-func (s *MerchantService) UpdateMerchant(merchant *models.Merchant) error {
-    return s.repository.UpdateMerchant(merchant)
+// UpdateMerchant actualiza un comercio existente por su UUID
+func (s *MerchantService) UpdateMerchant(id uuid.UUID, merchant *models.Merchant) error {
+    // Buscar si el comercio existe antes de actualizar
+    existingMerchant, err := s.repository.GetMerchantByID(id)
+    if err != nil {
+        return fmt.Errorf("comercio no encontrado: %w", err)
+    }
+    // Actualizar la información del comercio
+    existingMerchant.Name = merchant.Name
+    existingMerchant.Commission = merchant.Commission
+
+    return s.repository.UpdateMerchant(id, existingMerchant)
 }
+

@@ -3,6 +3,7 @@ package repositories
 import (
 	"myPagosApp/internal/models"
 	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 type MerchantRepository struct {
@@ -14,7 +15,7 @@ func NewMerchantRepository(db *gorm.DB) *MerchantRepository {
     return &MerchantRepository{DB: db}
 }
 
-// CreateMerchant guarda un nuevo comercio en la base de datos
+// Crea nuevo merchant
 func (r *MerchantRepository) CreateMerchant(merchant *models.Merchant) error {
     return r.DB.Create(merchant).Error
 }
@@ -26,7 +27,22 @@ func (r *MerchantRepository) GetAllMerchants() ([]models.Merchant, error) {
     return merchants, err
 }
 
-// UpdateMerchant actualiza un comercio existente en la base de datos
-func (r *MerchantRepository) UpdateMerchant(merchant *models.Merchant) error {
-    return r.DB.Save(merchant).Error
+// Actualizar un comercio por su ID
+func (r *MerchantRepository) UpdateMerchant(id uuid.UUID, updatedMerchant *models.Merchant) error {
+	return r.DB.Model(&models.Merchant{}).Where("id = ?", id).Updates(updatedMerchant).Error
 }
+
+// GetMerchantByID busca un comercio por su UUID
+func (r *MerchantRepository) GetMerchantByID(id uuid.UUID) (*models.Merchant, error) {
+    var merchant models.Merchant
+    if err := r.DB.First(&merchant, "id = ?", id).Error; err != nil {
+        return nil, err
+    }
+    return &merchant, nil
+}
+
+
+// UpdateMerchant actualiza un comercio existente en la base de datos
+// func (r *MerchantRepository) UpdateMerchant(merchant *models.Merchant) error {
+//     return r.DB.Save(merchant).Error
+// }
