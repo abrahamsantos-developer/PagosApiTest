@@ -2,13 +2,22 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/files"       // Paquete Swagger Files
+	"github.com/swaggo/gin-swagger" // Paquete Swagger
 	"log"
+	_ "myPagosApp/docs" // Importa la documentación generada
 	"myPagosApp/internal/handlers"
+	"myPagosApp/internal/models"
 	"myPagosApp/internal/repositories"
 	"myPagosApp/internal/services"
-	"myPagosApp/internal/models"
 	"myPagosApp/pkg" // Aquí está la conexión a PostgreSQL
 )
+
+// @title MyPagosApp API
+// @version 1.0
+// @description Esta es la API de MyPagosApp para manejar comercios y transacciones.
+// @host localhost:3000
+// @BasePath /
 
 func main() {
 
@@ -38,6 +47,9 @@ func main() {
 			"message": "¡Servidor corriendo correctamente, OK OK OK!",
 		})
 	})
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 
 	// Definir rutas para comercios
 	r.POST("/merchants", merchantHandler.CreateMerchantHandler)

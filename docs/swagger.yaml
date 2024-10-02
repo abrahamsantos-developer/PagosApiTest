@@ -1,0 +1,108 @@
+basePath: /
+definitions:
+  handlers.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Merchant:
+    properties:
+      commission:
+        description: porcentaje comision
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: Esta es la API de MyPagosApp para manejar comercios y transacciones.
+  title: MyPagosApp API
+  version: "1.0"
+paths:
+  /merchants:
+    get:
+      description: Obtener una lista de todos los comercios en el sistema.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Merchant'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Obtener todos los comercios
+      tags:
+      - Comercios
+    post:
+      consumes:
+      - application/json
+      description: Crear un nuevo comercio en el sistema.
+      parameters:
+      - description: Comercio a crear
+        in: body
+        name: merchant
+        required: true
+        schema:
+          $ref: '#/definitions/models.Merchant'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Merchant'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Crear un comercio
+      tags:
+      - Comercios
+  /merchants/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Actualizar los detalles de un comercio existente.
+      parameters:
+      - description: ID del Comercio
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Datos actualizados del comercio
+        in: body
+        name: merchant
+        required: true
+        schema:
+          $ref: '#/definitions/models.Merchant'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Merchant'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Actualizar un comercio
+      tags:
+      - Comercios
+swagger: "2.0"
