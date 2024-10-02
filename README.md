@@ -16,6 +16,7 @@ En sistemas Linux (Ubuntu/Debian):
 ```bash
 sudo apt update
 sudo apt install docker.io
+```
 
 
 
@@ -32,9 +33,9 @@ En macOS y Windows, Docker Compose viene incluido con Docker Desktop.
 Verificar la instalación:
 Asegúrate de que Docker y Docker Compose están correctamente instalados ejecutando los siguientes comandos:
 
+```bash
 docker --version
 docker-compose --version
-
 ```
 
 
@@ -42,15 +43,19 @@ docker-compose --version
 
 #### 1. Clonar el repositorio
 
+```bash
 git clone https://github.com/abrahamsantos-developer/PagosApiTest.git
-
+```
+```bash
 cd PagosApiTest
+```
 
 #### 2. Levantar los contenedores
 Ejecuta el siguiente comando para construir la imagen y levantar la aplicación junto con PostgreSQL:
 
-
+```bash
 docker-compose up --build
+```
 
 Si es necesario, puedes agregar sudo antes de los comandos docker y docker-compose.
 Esto levantará tanto la API como la base de datos en contenedores Docker.
@@ -67,9 +72,12 @@ Puedes acceder a la documentación interactiva de la API en http://localhost:300
 Comandos útiles
 
 Parar los contenedores:
-
+```bash
 docker-compose down
+```
 
 Reiniciar los contenedores:
+```bash
 
 docker-compose up --build
+```
