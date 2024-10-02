@@ -1,10 +1,13 @@
 package main
 
 import (
-	"log"
-	"myPagosApp/pkg" // Aquí está la conexión a PostgreSQL
-
 	"github.com/gin-gonic/gin"
+	"log"
+	"myPagosApp/internal/handlers"
+	"myPagosApp/internal/repositories"
+	"myPagosApp/internal/services"
+	"myPagosApp/internal/models"
+	"myPagosApp/pkg" // Aquí está la conexión a PostgreSQL
 )
 
 func main() {
@@ -18,6 +21,14 @@ func main() {
 		log.Fatal("No se pudo conectar a la base de datos")
 	}
 
+	// Migrar el modelo Merchant para crear la tabla si no existe
+	db.AutoMigrate(&models.Merchant{})
+
+	// Inicializar repositorio, servicio y handler para comercios
+	merchantRepo := repositories.NewMerchantRepository(db)
+	merchantService := services.NewMerchantService(merchantRepo)
+	merchantHandler := handlers.NewMerchantHandler(merchantService)
+
 	// Inicializar el router de Gin
 	r := gin.Default()
 
@@ -27,6 +38,11 @@ func main() {
 			"message": "¡Servidor corriendo correctamente, OK OK OK!",
 		})
 	})
+
+	// Definir rutas para comercios
+	r.POST("/merchants", merchantHandler.CreateMerchantHandler)
+	r.GET("/merchants", merchantHandler.GetAllMerchantsHandler)
+	r.PUT("/merchants/:id", merchantHandler.UpdateMerchantHandler)
 
 	// Iniciar el servidor en el puerto 3000
 	r.Run(":3000")
