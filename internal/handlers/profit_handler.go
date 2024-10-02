@@ -19,7 +19,8 @@ func NewProfitHandler(service *services.ProfitService) *ProfitHandler {
 
 // struct personalizado (error)
 type ProfitErrorResponse struct {
-	Error string `json:"error"`
+	Error   string `json:"error"`
+	Message string `json:"message"`
 }
 
 // @Summary Obtener las ganancias totales
@@ -32,7 +33,10 @@ type ProfitErrorResponse struct {
 func (h *ProfitHandler) GetTotalProfitsHandler(c *gin.Context) {
 	totalProfits, err := h.service.GetTotalProfits()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ProfitErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, ProfitErrorResponse{
+			Error:   "Error al obtener las ganancias totales",
+			Message: err.Error(),
+		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"total_profits": totalProfits})
@@ -51,13 +55,19 @@ func (h *ProfitHandler) GetProfitsByMerchantIDHandler(c *gin.Context) {
 	idParam := c.Param("merchant_id")
 	merchantID, err := uuid.Parse(idParam)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ProfitErrorResponse{Error: "ID inválido"})
+		c.JSON(http.StatusBadRequest, ProfitErrorResponse{
+			Error:   "UUID con formato invalido",
+			Message: "La ID del comercio proporcionada no es un UUID valido",
+		})
 		return
 	}
 
 	profits, err := h.service.GetProfitsByMerchantID(merchantID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ProfitErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, ProfitErrorResponse{
+			Error:   "Error al obtener las ganancias por comercio",
+			Message: err.Error(),
+		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"merchant_profits": profits})

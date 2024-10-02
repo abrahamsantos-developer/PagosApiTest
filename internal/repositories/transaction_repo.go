@@ -56,13 +56,13 @@ func (r *TransactionRepository) GetTotalProfits() (float64, error) {
 
 // suma todas las fees de las transactions por merchantID 
 func (r *TransactionRepository) SumCommissionsByMerchantID(merchantID uuid.UUID) (float64, error) {
-	var totalCommission float64
+	var totalProfit float64
 	err := r.DB.Model(&models.Transaction{}).
 		Where("merchant_id = ?", merchantID).
-		Select("SUM(commission)").
-		Scan(&totalCommission).Error
+		Select("SUM(fee)").
+		Scan(&totalProfit).Error
 	if err != nil {
 		return 0, err
 	}
-	return totalCommission, nil
+	return totalProfit, nil
 }
