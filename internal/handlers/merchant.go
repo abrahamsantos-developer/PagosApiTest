@@ -25,12 +25,9 @@ type SwaggerMerchantRequest struct {
 
 // struct de respuesta
 type ErrorResponse struct {
-	Error string `json:"error"`
+	Error   string `json:"error"`
+	Message string `json:"message"`
 }
-
-// type MessageResponse struct {
-// 	Message string `json:"message"`
-// }
 
 // @Summary Crear un comercio
 // @Description Crear un nuevo comercio en el sistema.
@@ -44,11 +41,27 @@ type ErrorResponse struct {
 func (h *MerchantHandler) CreateMerchantHandler(c *gin.Context) {
 	var merchant models.Merchant
 	if err := c.ShouldBindJSON(&merchant); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Error:   "Error de validacion",
+			Message: "El cuerpo de la solicitud no es valido: " + err.Error(),
+		})
 		return
 	}
+
+	// valida que el name no este vacio
+	if merchant.Name == "" {
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Error:   "Error de validacion",
+			Message: "El nombre del comercio no puede estar vacio",
+		})
+		return
+	}
+
 	if err := h.service.CreateMerchant(&merchant); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Error:   "Error al crear el comercio",
+			Message: err.Error(),
+		})
 		return
 	}
 	c.JSON(http.StatusOK, merchant)
@@ -82,13 +95,21 @@ func (h *MerchantHandler) GetAllMerchantsHandler(c *gin.Context) {
 func (h *MerchantHandler) GetMerchantByIDHandler(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "ID inválido"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Error:   "UUID con formato invalido",
+			Message: "La ID proporcionada no es un UUID valido",
+		})
 		return
 	}
+
 	merchant, err := h.service.GetMerchantByID(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, ErrorResponse{Error: "Comercio no encontrado"})
+		c.JSON(http.StatusNotFound, ErrorResponse{
+			Error:   "Comercio no encontrado",
+			Message: "No se encontró un comercio con el ID proporcionado",
+		})
 		return
 	}
 	c.JSON(http.StatusOK, merchant)
@@ -106,24 +127,33 @@ func (h *MerchantHandler) GetMerchantByIDHandler(c *gin.Context) {
 // @Failure 500 {object} ErrorResponse
 // @Router /merchants/{id} [put]
 func (h *MerchantHandler) UpdateMerchantHandler(c *gin.Context) {
-	// Obtener el ID (UUID) desde el parámetro de la ruta
+	// Obtiene ID desde el param de la ruta
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "ID invalido"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Error:   "UUID con formato inválido",
+			Message: "La ID proporcionada no es un UUID valido",
+		})
 		return
 	}
 
-	// obtener datos de update delcuerpo del request
+	// obtener datos de update del cuerpo del request
 	var updatedMerchant models.Merchant
 	if err := c.ShouldBindJSON(&updatedMerchant); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Error:   "Error de validación",
+			Message: "El cuerpo de la solicitud no es válido: " + err.Error(),
+		})
 		return
 	}
 
 	// update merchant
 	if err := h.service.UpdateMerchant(id, &updatedMerchant); err != nil {
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{
+			Error:   "Error al actualizar el comercio",
+			Message: err.Error(),
+		})
 		return
 	}
 	c.JSON(http.StatusOK, updatedMerchant)

@@ -394,6 +394,9 @@ const docTemplate = `{
             "properties": {
                 "error": {
                     "type": "string"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
