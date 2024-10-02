@@ -1,26 +1,26 @@
 package services
 
 import (
-	"myPagosApp/internal/repositories"
 	"github.com/google/uuid"
+	"myPagosApp/internal/repositories"
 )
 
-// ProfitService define la lógica para calcular las ganancias
+// logica para calcular las profits
 type ProfitService struct {
 	transactionRepo *repositories.TransactionRepository
 }
 
-// NewProfitService crea un nuevo servicio de ganancias
+// crea un nuevo service de profits
 func NewProfitService(transactionRepo *repositories.TransactionRepository) *ProfitService {
 	return &ProfitService{transactionRepo: transactionRepo}
 }
 
-// GetTotalProfits calcula las ganancias totales de todas las transacciones
+// calcula las profits totales de todas las transactions
 func (s *ProfitService) GetTotalProfits() (float64, error) {
 	return s.transactionRepo.GetTotalProfits()
 }
 
-// GetProfitsByMerchantID calcula las ganancias de un comercio específico
+// calcula las ganancias de un merchant por su ID
 func (s *ProfitService) GetProfitsByMerchantID(merchantID uuid.UUID) (float64, error) {
 	return s.transactionRepo.SumCommissionsByMerchantID(merchantID)
 }

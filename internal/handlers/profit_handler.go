@@ -7,17 +7,17 @@ import (
 	"net/http"
 )
 
-// ProfitHandler maneja las solicitudes relacionadas con ganancias
+// maneja las solicitudes http de profits
 type ProfitHandler struct {
 	service *services.ProfitService
 }
 
-// NewProfitHandler crea un nuevo handler para ganancias
+// crea un nuevo handler para profits
 func NewProfitHandler(service *services.ProfitService) *ProfitHandler {
 	return &ProfitHandler{service: service}
 }
 
-// Estructura de respuesta para errores de ganancias
+// struct personalizado (error)
 type ProfitErrorResponse struct {
 	Error string `json:"error"`
 }

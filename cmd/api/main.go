@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/swaggo/files"       // Paquete Swagger Files
-	"github.com/swaggo/gin-swagger" // Paquete Swagger
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 	"log"
-	_ "myPagosApp/docs" // Importa la documentación generada
+	_ "myPagosApp/docs"
 	"myPagosApp/internal/handlers"
 	"myPagosApp/internal/models"
 	"myPagosApp/internal/repositories"
 	"myPagosApp/internal/services"
-	"myPagosApp/pkg" // Aquí está la conexión a PostgreSQL
+	"myPagosApp/pkg"
 )
 
 // @title MyPagosApp API
@@ -21,10 +21,10 @@ import (
 
 func main() {
 
-	// monfigurar modo release
+	// configurar modo release
 	gin.SetMode(gin.ReleaseMode)
 
-	// Conecta a la base de datos
+	// conecta  a DB
 	db := pkg.ConnectDB()
 	if db == nil {
 		log.Fatal("No se pudo conectar a la base de datos")
@@ -33,24 +33,24 @@ func main() {
 	// migra modelo Merchant para crear la tabla si no existe
 	db.AutoMigrate(&models.Merchant{}, &models.Transaction{})
 
-	// Inicializa repo service y handler de merchants
+	// repo, service y handler de merchants
 	merchantRepo := repositories.NewMerchantRepository(db)
 	merchantService := services.NewMerchantService(merchantRepo)
 	merchantHandler := handlers.NewMerchantHandler(merchantService)
 
-	// Inicializa repo service y handler de transactions
+	// repo, service y handler de transactions
 	transactionRepo := repositories.NewTransactionRepository(db)
 	transactionService := services.NewTransactionService(transactionRepo, merchantRepo)
 	transactionHandler := handlers.NewTransactionHandler(transactionService)
 
-	// Inicializa service y handler de profits
+	// service y handler de profits
 	profitService := services.NewProfitService(transactionRepo)
 	profitHandler := handlers.NewProfitHandler(profitService)
 
-	// Inicializar el router de gin
+	// iniciar router Gin
 	r := gin.Default()
 
-	// sirve para verificar que el servidor funciona
+	// verificar que el servidor funciona
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "¡Servidor corriendo correctamente, OK OK OK!",

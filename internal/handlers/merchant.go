@@ -8,12 +8,12 @@ import (
 	"net/http"
 )
 
-// MerchantHandler maneja las solicitudes HTTP relacionadas con comercios
+// maneja solicitudes HTTP relacionadas de merchant
 type MerchantHandler struct {
 	service *services.MerchantService
 }
 
-// NewMerchantHandler crea un nuevo handler para comercios
+// creanuevo handlerpara merchant
 func NewMerchantHandler(service *services.MerchantService) *MerchantHandler {
 	return &MerchantHandler{service: service}
 }
@@ -23,7 +23,7 @@ type SwaggerMerchantRequest struct {
 	Commission uint   `json:"commission" example:"15"`
 }
 
-// Estructuras de respuesta
+// struct de respuesta
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
@@ -114,14 +114,14 @@ func (h *MerchantHandler) UpdateMerchantHandler(c *gin.Context) {
 		return
 	}
 
-	// Obtener los nuevos datos del comercio desde el cuerpo de la solicitud
+	// obtener datos de update delcuerpo del request
 	var updatedMerchant models.Merchant
 	if err := c.ShouldBindJSON(&updatedMerchant); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
 		return
 	}
 
-	// Actualizar el comercio
+	// update merchant
 	if err := h.service.UpdateMerchant(id, &updatedMerchant); err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		return

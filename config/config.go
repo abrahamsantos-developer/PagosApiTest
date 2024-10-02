@@ -2,7 +2,7 @@ package config
 
 import "os"
 
-// GetEnv obtiene las variables de entorno con un valor por defecto
+// obtiene las variables de entorno con valor default
 func GetEnv(key, fallback string) string {
     value := os.Getenv(key)
     if len(value) == 0 {

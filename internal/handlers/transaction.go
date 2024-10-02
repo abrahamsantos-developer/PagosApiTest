@@ -8,23 +8,23 @@ import (
 	"net/http"
 )
 
-// TransactionHandler maneja las solicitudes HTTP relacionadas con transacciones
+// maneja solicitudes HTTP de transactions
 type TransactionHandler struct {
 	service *services.TransactionService
 }
 
-// NewTransactionHandler crea un nuevo handler para transacciones
+// crea nuevo handler para transactions
 func NewTransactionHandler(service *services.TransactionService) *TransactionHandler {
 	return &TransactionHandler{service: service}
 }
 
-// SwaggerTransactionRequest se usa para validar el body en Swagger
+// valida el body en Swagger(example)
 type SwaggerTransactionRequest struct {
 	MerchantID uuid.UUID `json:"merchant_id" example:"d290f1ee-6c54-4b01-90e6-d701748f0851"`
 	Amount     float64   `json:"amount" example:"100.50"`
 }
 
-// Estructura de respuesta de error
+// struct personalizado(error)
 type TransactionErrorResponse struct {
 	Error string `json:"error"`
 }

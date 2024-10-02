@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// epresenta la estructura de un comercio
+// representa un merchant
 type Merchant struct {
 	ID           uuid.UUID     `gorm:"type:uuid;primary_key" json:"id"`
 	Name         string        `gorm:"size:255" json:"name"`
@@ -16,8 +16,8 @@ type Merchant struct {
 	UpdatedAt    time.Time     `json:"updated_at"`
 }
 
-// Genera UUID antes delnuevo registro
+// genera UUID antes de insertar nuevo registro
 func (m *Merchant) BeforeCreate(tx *gorm.DB) (err error) {
-	m.ID = uuid.New() // Generar un nuevo UUID
+	m.ID = uuid.New()
 	return
 }

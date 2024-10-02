@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// representa transaccion de un merchant
+// representa transaction de un merchant
 type Transaction struct {
 	ID         uuid.UUID `gorm:"type:uuid;primary_key" json:"id"`
 	MerchantID uuid.UUID `gorm:"type:uuid" json:"merchant_id"`
@@ -17,7 +17,7 @@ type Transaction struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
-// BeforeCreate genera un nuevo UUID antes de crear una transacción
+// genera UUID antes de crear transaction
 func (t *Transaction) BeforeCreate(tx *gorm.DB) (err error) {
 	t.ID = uuid.New()
 	return

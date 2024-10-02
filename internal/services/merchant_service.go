@@ -7,17 +7,17 @@ import (
 	"myPagosApp/internal/repositories"
 )
 
-// MerchantService define la lógica de negocio para los comercios
+// logica para merchants
 type MerchantService struct {
 	repository *repositories.MerchantRepository
 }
 
-// NewMerchantService crea un nuevo servicio de comercios
+// crea nuevo service de merchants
 func NewMerchantService(repo *repositories.MerchantRepository) *MerchantService {
 	return &MerchantService{repository: repo}
 }
 
-// CreateMerchant valida y guarda un nuevo comercio
+// crea y guarda un nuevo merchant
 func (s *MerchantService) CreateMerchant(merchant *models.Merchant) error {
 	if merchant.Commission < 1.0 || merchant.Commission > 100.0 {
 		return fmt.Errorf("la comisión debe estar entre 1.0 y 100.0")
@@ -25,29 +25,29 @@ func (s *MerchantService) CreateMerchant(merchant *models.Merchant) error {
 	return s.repository.CreateMerchant(merchant)
 }
 
-// GetAllMerchants obtiene todos los comercios
+// obtiene todos los merchants
 func (s *MerchantService) GetAllMerchants() ([]models.Merchant, error) {
 	return s.repository.GetAllMerchants()
 }
 
-// GetMerchantByID busca un comercio por su UUID
+// obtiene un merchant por ID
 func (s *MerchantService) GetMerchantByID(id uuid.UUID) (*models.Merchant, error) {
 	return s.repository.GetMerchantByID(id)
 }
 
-// UpdateMerchant actualiza un comercio existente por su UUID
+// actualiza un merchant existente por su ID
 func (s *MerchantService) UpdateMerchant(id uuid.UUID, merchant *models.Merchant) error {
-	// Buscar si el comercio existe antes de actualizar
+	// busca si merchant existe
 	existingMerchant, err := s.repository.GetMerchantByID(id)
 	if err != nil {
 		return fmt.Errorf("comercio no encontrado: %w", err)
 	}
 
-	// Validar la nueva comision
+	// valida comision
 	if merchant.Commission < 1.0 || merchant.Commission > 100.0 {
 		return fmt.Errorf("la comisión debe estar entre 1.0 y 100.0")
 	}
-	// Actualiza la info
+	// update merchant
 	existingMerchant.Name = merchant.Name
 	existingMerchant.Commission = merchant.Commission
 

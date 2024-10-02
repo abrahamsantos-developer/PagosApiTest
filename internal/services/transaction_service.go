@@ -7,13 +7,13 @@ import (
 	"myPagosApp/internal/repositories"
 )
 
-// TransactionService define la lógica de negocio para las transacciones
+// logica para las transactions
 type TransactionService struct {
-	repository    *repositories.TransactionRepository
-	merchantRepo  *repositories.MerchantRepository
+	repository   *repositories.TransactionRepository
+	merchantRepo *repositories.MerchantRepository
 }
 
-// NewTransactionService crea un nuevo servicio de transacciones
+// crea nuevo service de transactions
 func NewTransactionService(repo *repositories.TransactionRepository, merchantRepo *repositories.MerchantRepository) *TransactionService {
 	return &TransactionService{
 		repository:   repo,
@@ -21,33 +21,33 @@ func NewTransactionService(repo *repositories.TransactionRepository, merchantRep
 	}
 }
 
-// CreateTransaction crea una nueva transacción, calculando el fee basado en la comisión del comercio
+// crea una nueva transaction. calcula el fee basado en la comision del merchant
 func (s *TransactionService) CreateTransaction(transaction *models.Transaction) error {
-	// Obtener el comercio asociado por MerchantID
+	// obtiene merchant asociado por MerchantID
 	merchant, err := s.merchantRepo.GetMerchantByID(transaction.MerchantID)
 	if err != nil {
 		return fmt.Errorf("comercio no encontrado: %w", err)
 	}
 
-	// Calcular la comisión y el fee
+	// calcula la comission y fee
 	transaction.Commission = merchant.Commission
 	transaction.Fee = (transaction.Amount * transaction.Commission) / 100.0
 
-	// Guardar la transacción
+	// guarda transaccion
 	return s.repository.CreateTransaction(transaction)
 }
 
-// GetAllTransactions obtiene todas las transacciones
+// obtiene todas las transactions
 func (s *TransactionService) GetAllTransactions() ([]models.Transaction, error) {
 	return s.repository.GetAllTransactions()
 }
 
-// GetTransactionsByMerchantID obtiene todas las transacciones de un comercio específico
+// obtiene todas las transacctions by MerchantId
 func (s *TransactionService) GetTransactionsByMerchantID(merchantID uuid.UUID) ([]models.Transaction, error) {
 	return s.repository.GetTransactionsByMerchantID(merchantID)
 }
 
-// GetTransactionByID obtiene una transacción por su UUID
+// obtiene una transaction por su ID
 func (s *TransactionService) GetTransactionByID(id uuid.UUID) (*models.Transaction, error) {
 	return s.repository.GetTransactionByID(id)
 }
