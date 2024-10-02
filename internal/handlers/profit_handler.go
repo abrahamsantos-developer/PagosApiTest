@@ -70,5 +70,8 @@ func (h *ProfitHandler) GetProfitsByMerchantIDHandler(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"merchant_profits": profits})
+	c.JSON(http.StatusOK, gin.H{
+		"merchant_id":      merchantID,
+		"merchant_profits": profits,
+	})
 }
