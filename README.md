@@ -25,9 +25,10 @@ En macOS y Windows, descarga Docker Desktop desde la página oficial de Docker.
 Instalar Docker Compose:
 
 En sistemas Linux (Ubuntu/Debian):
-
+```bash
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
+```
 En macOS y Windows, Docker Compose viene incluido con Docker Desktop.
 
 Verificar la instalación:
