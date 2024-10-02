@@ -148,7 +148,10 @@ func (h *MerchantHandler) UpdateMerchantHandler(c *gin.Context) {
 		return
 	}
 
-	// update merchant
+	// Asegurarse de no resetear el ID
+	updatedMerchant.ID = id
+
+	// try update merchant
 	if err := h.service.UpdateMerchant(id, &updatedMerchant); err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{
 			Error:   "Error al actualizar el comercio",
@@ -156,5 +159,15 @@ func (h *MerchantHandler) UpdateMerchantHandler(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, updatedMerchant)
+
+	// Volver a obtener el comercio actualizado desde la base de datos (con las transacciones)
+	merchant, err := h.service.GetMerchantByID(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ErrorResponse{
+			Error:   "Error al obtener el comercio actualizado",
+			Message: err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, merchant)
 }
