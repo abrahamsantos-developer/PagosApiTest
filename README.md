@@ -59,6 +59,11 @@ docker-compose up --build
 ```
 
 Si es necesario, puedes agregar sudo antes de los comandos docker y docker-compose.
+
+```bash
+sudo docker-compose up --build
+```
+
 Esto levantará tanto la API como la base de datos en contenedores Docker.
 
 
@@ -72,13 +77,27 @@ Puedes acceder a la documentación interactiva de la API en http://localhost:300
 
 Comandos útiles
 
-Parar los contenedores:
+1. Parar los contenedores:
+El siguiente comando detendrá y eliminará los contenedores, pero no eliminará las imágenes ni volúmenes.
 ```bash
 docker-compose down
 ```
 
-Reiniciar los contenedores:
+2. Reiniciar los contenedores:
+El siguiente comando reconstruirá las imágenes y levantará nuevamente los contenedores. Útil si hiciste cambios en el código o en el Dockerfile y necesitas aplicar esos cambios.
 ```bash
-
 docker-compose up --build
+```
+
+3. Eliminar contenedores y volúmenes:
+Este comando detendrá y eliminará los contenedores y también los volúmenes. Los datos persistidos se perderán, pero las imágenes no se eliminarán.
+```bash
+docker-compose down --volumes
+
+```
+
+4. Parar los contenedores y eliminar volúmenes e imágenes:
+Si además de detener los contenedores quieres eliminar las imágenes y volúmenes asociados, puedes ejecutar:
+```bash
+docker-compose down --rmi all --volumes
 ```
